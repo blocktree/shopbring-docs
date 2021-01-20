@@ -71,85 +71,85 @@ InviterRelationship map hasher(twox_64_concat) T::AccountId => T::AccountId;
 
 | Parameter    | Type    | Description      |
 |--------------|---------|------------------|
-| invitationPK | byte32  | 邀请函校验公钥。  |
-| unitBonus    | Balance | 单笔赠金数`BPG`。 |
-| maxInvitees  | u64     | 最大邀请人数。    |
-| frozenAmount | Balance | 冻结的金额。      |
-| numOfInvited | u32     | 已邀请人数。      |
+| invitation_pk | byte32  | 邀请函校验公钥。  |
+| unit_bonus    | Balance | 单笔赠金数`BPG`。 |
+| max_invitees  | u64     | 最大邀请人数。    |
+| frozen_amount | Balance | 冻结的金额。      |
+| num_of_invited | u32     | 已邀请人数。      |
 
 ## 公共方法
 
-### registerInviter `注册邀请人`
+### register_inviter `注册邀请人`
 
 #### 函数定义
 
-首先邀请人离线生成ed25519密钥对，把其中的公钥作为`invitationPK`参数提交。
+首先邀请人离线生成ed25519密钥对，把其中的公钥作为`invitation_pk`参数提交。
 
-```javascript
+```rust
 
-/// registerInviter
+/// register_inviter
 /// - inviter address 邀请人账户地址
-/// - invitationPK byte32 邀请函校验公钥
-/// - unitBonus Balance 单笔赠金数
-/// - maxInvitees u64 最大邀请人数
-registerInviter(inviter, invitationPK, unitBonus, maxInvitees);
+/// - invitation_pk byte32 邀请函校验公钥
+/// - unit_bonus Balance 单笔赠金数
+/// - max_invitees u64 最大邀请人数
+register_inviter(inviter, invitation_pk, unit_bonus, max_invitees);
 
 ```
 
 #### Event
 
-```javascript
+```rust
 
 /// registerInviter
 /// - inviter address 邀请人账户地址
-/// - invitationPK byte32 邀请函校验公钥
-/// - unitBonus Balance 单笔赠金数
-/// - maxInvitees u64 最大邀请人数
-/// - frozenAmount Balance 冻结的金额
-RegisterInviter(inviter, invitationPK, unitBonus, maxInvitees, frozenAmount)
+/// - invitation_pk byte32 邀请函校验公钥
+/// - unit_bonus Balance 单笔赠金数
+/// - max_invitees u64 最大邀请人数
+/// - frozen_amount Balance 冻结的金额
+RegisterInviter(inviter, invitation_pk, unit_bonus, max_invitees, frozen_amount)
 
 ```
 
-### acceptInvitation `接受邀请`
+### accept_invitation `接受邀请`
 
-`invitationSIG`需要邀请人的邀请函私钥签名受邀人账户公钥Blake2b获得。
-`acceptInvitation`会查询`inviter`的邀请人信息是否存在，最后验证`invitationSIG`是否正确。
+`invitation_sig`需要邀请人的邀请函私钥签名受邀人账户公钥Blake2b获得。
+`accept_invitation`会查询`inviter`的邀请人信息是否存在，最后验证`invitation_sig`是否正确。
 
 #### 函数定义
 
-```javascript
+```rust
 
-/// acceptInvitation
+/// accept_invitation
 /// - invitee address 受邀人账户地址
-/// - invitationSIG byte64 邀请函签名
+/// - invitation_sig byte64 邀请函签名
 /// - inviter address 邀请人账户地址
-acceptInvitation(invitee, invitationSIG, inviter);
+accept_invitation(invitee, invitation_sig, inviter);
 
 ```
 
 #### Event
 
-```javascript
+```rust
 
 /// AcceptInvitation
 /// - invitee address 受邀人账户地址
-/// - invitationSIG byte64 邀请函签名
+/// - invitation_sig byte64 邀请函签名
 /// - inviter address 邀请人账户地址
-AcceptInvitation(invitee, invitationSIG, inviter);
+AcceptInvitation(invitee, invitation_sig, inviter);
 
 ```
 
-### endInvitationPeriod `结束邀请期`
+### end_invitation_period `结束邀请期`
 
 邀请人结束邀请期，可以回收未使用的赠金。
 
 #### 函数定义
 
-```javascript
+```rust
 
-/// endInvitationPeriod
+/// end_invitation_period
 /// - inviter address 邀请人账户地址
-endInvitationPeriod(inviter);
+end_invitation_period(inviter);
 
 ```
 
@@ -157,14 +157,14 @@ endInvitationPeriod(inviter);
 
 邀请人提前结束邀请期将记录该事件，最后一个受邀人接受邀请时也会纪录该事件。纪录事件后，系统将删除邀请人信息。
 
-```javascript
+```rust
 
 /// EndInvitationPeriod
 /// - inviter address 邀请人账户地址
-/// - reclaimedBonus Balance 已回收的赠金
-/// - numOfInvited Balance 已邀请人数
+/// - reclaimed_bonus Balance 已回收的赠金
+/// - num_of_invited Balance 已邀请人数
 /// - end BlockNumber 准确的结束时间
-EndInvitationPeriod(inviter, reclaimedBonus, numOfInvited, end);
+EndInvitationPeriod(inviter, reclaimed_bonus, num_of_invited, end);
 
 ```
 
